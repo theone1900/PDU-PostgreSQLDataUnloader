@@ -94,6 +94,18 @@ PDU handles **three critical disaster scenarios** with **two recovery methods**:
 
 ---
 
+## 📦 Download a Compiled PDU Binary
+
+Prebuilt Linux x86_64 artifacts are produced by the **Build PDU Binary** GitHub Actions workflow for PostgreSQL 14, 15, 16, 17, and 18 compatibility.
+
+1. Open the repository on GitHub and go to **Actions**.
+2. Select **Build PDU Binary**.
+3. Open the latest successful run for your branch or release.
+4. Download the artifact that matches your PostgreSQL major version, for example `pdu-linux-x86_64-pg16`.
+5. Extract it and run `./pdu` next to your configured `pdu.ini`.
+
+You can still build locally with `make` if you need a different platform or compiler configuration.
+
 ## 🚀 Quick Start
 
 ### Step 1: Build PDU

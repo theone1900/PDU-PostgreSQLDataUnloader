@@ -1,0 +1,39 @@
+name: Build PDU Binary
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build-linux-x86_64:
+    name: Build Linux x86_64 binary
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        pg_version: [14, 15, 16, 17, 18]
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Select PostgreSQL ${{ matrix.pg_version }} compatibility
+        run: |
+          sed -i 's/#define PG_VERSION_NUM [0-9]\+/#define PG_VERSION_NUM ${{ matrix.pg_version }}/g' basic.h
+
+      - name: Build pdu
+        run: make
+
+      - name: Package binary and sample config
+        run: |
+          mkdir -p dist/pdu-linux-x86_64-pg${{ matrix.pg_version }}
+          cp pdu pdu.ini LICENSE NOTICE README.md dist/pdu-linux-x86_64-pg${{ matrix.pg_version }}/
+          tar -C dist -czf pdu-linux-x86_64-pg${{ matrix.pg_version }}.tar.gz pdu-linux-x86_64-pg${{ matrix.pg_version }}
+
+      - name: Upload compiled pdu artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdu-linux-x86_64-pg${{ matrix.pg_version }}
+          path: pdu-linux-x86_64-pg${{ matrix.pg_version }}.tar.gz
+          if-no-files-found: error
